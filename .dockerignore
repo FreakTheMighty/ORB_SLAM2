@@ -1,0 +1,7 @@
+.git
+rgb
+*.mp4
+*.png
+*.jpg
+build
+Examples/Monocular/house

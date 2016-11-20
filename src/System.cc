@@ -336,7 +336,44 @@ void System::SaveTrajectoryTUM(const string &filename)
     cout << endl << "trajectory saved!" << endl;
 }
 
+void System::SavePointCloud(const string &filename)
+{
+    cout << endl << "Saving point cloud to " << filename << " ..." << endl;
+    
+    ofstream f;
+    f.open(filename.c_str());
+    f << fixed;
 
+    const vector<MapPoint*> &vpMPs = mpMap->GetAllMapPoints();
+    const vector<MapPoint*> &vpRefMPs = mpMap->GetReferenceMapPoints();
+    
+    set<MapPoint*> spRefMPs(vpRefMPs.begin(), vpRefMPs.end());
+    
+    if(vpMPs.empty())
+        return;
+    
+    int minObservations = 16;
+    
+    for(size_t i=0, iend=vpMPs.size(); i<iend;i++)
+    {
+        if(vpMPs[i]->isBad() || spRefMPs.count(vpMPs[i]) || vpMPs[i]->Observations() > minObservations)
+            continue;
+        cv::Mat pos = vpMPs[i]->GetWorldPos();
+        f << setprecision(7) << pos.at<float>(0) << " " << pos.at<float>(1) << " " << pos.at<float>(2) << endl;
+    }
+    
+    for(set<MapPoint*>::iterator sit=spRefMPs.begin(), send=spRefMPs.end(); sit!=send; sit++)
+    {
+        if((*sit)->isBad() || (*sit)->Observations() > minObservations)
+            continue;
+        cv::Mat pos = (*sit)->GetWorldPos();
+        f << setprecision(7) << pos.at<float>(0) << " " << pos.at<float>(1) << " " << pos.at<float>(2) << endl;
+    }
+    
+    f.close();
+    cout << endl << "Point cloud saved!" << endl;
+}
+    
 void System::SaveKeyFrameTrajectoryTUM(const string &filename)
 {
     cout << endl << "Saving keyframe trajectory to " << filename << " ..." << endl;

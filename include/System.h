@@ -95,6 +95,9 @@ public:
     // See format details at: http://vision.in.tum.de/data/datasets/rgbd-dataset
     void SaveTrajectoryTUM(const string &filename);
 
+    // Save point cloud
+    void SavePointCloud(const string &filename);
+
     // Save keyframe poses in the TUM RGB-D dataset format.
     // Use this function in the monocular case.
     // Call first Shutdown()
