@@ -92,8 +92,8 @@ Examples/Monocular/mono_tum.cc)
 target_link_libraries(mono_tum ${PROJECT_NAME})
 
 add_executable(slam_maker
-Examples/Monocular/mono_tum.cc)
-target_link_libraries(mono_tum ${PROJECT_NAME})
+Examples/Monocular/slam_maker.cc)
+target_link_libraries(slam_maker ${PROJECT_NAME})
 
 add_executable(mono_kitti
 Examples/Monocular/mono_kitti.cc)
