@@ -4,4 +4,5 @@ rgb
 *.png
 *.jpg
 build
+data
 Examples/Monocular/house

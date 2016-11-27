@@ -352,11 +352,9 @@ void System::SavePointCloud(const string &filename)
     if(vpMPs.empty())
         return;
     
-    int minObservations = 16;
-    
     for(size_t i=0, iend=vpMPs.size(); i<iend;i++)
     {
-        if(vpMPs[i]->isBad() || spRefMPs.count(vpMPs[i]) || vpMPs[i]->Observations() > minObservations)
+        if(vpMPs[i]->isBad())
             continue;
         cv::Mat pos = vpMPs[i]->GetWorldPos();
         f << setprecision(7) << pos.at<float>(0) << " " << pos.at<float>(1) << " " << pos.at<float>(2) << endl;
@@ -364,7 +362,7 @@ void System::SavePointCloud(const string &filename)
     
     for(set<MapPoint*>::iterator sit=spRefMPs.begin(), send=spRefMPs.end(); sit!=send; sit++)
     {
-        if((*sit)->isBad() || (*sit)->Observations() > minObservations)
+        if((*sit)->isBad())
             continue;
         cv::Mat pos = (*sit)->GetWorldPos();
         f << setprecision(7) << pos.at<float>(0) << " " << pos.at<float>(1) << " " << pos.at<float>(2) << endl;
@@ -388,6 +386,8 @@ void System::SaveKeyFrameTrajectoryTUM(const string &filename)
     ofstream f;
     f.open(filename.c_str());
     f << fixed;
+
+    cout << endl << "Keyframe count " << vpKFs.size() << endl;
 
     for(size_t i=0; i<vpKFs.size(); i++)
     {
