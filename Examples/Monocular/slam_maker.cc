@@ -43,7 +43,7 @@ int main(int argc, char **argv)
 
     
     cv::VideoCapture cap(argv[3]);
-    cap.set(CV_CAP_PROP_CONVERT_RGB, 1);
+    
     if (!cap.isOpened())
     {
         std::cout << "!!! Failed to open file: " << argv[3] << std::endl;
@@ -61,13 +61,8 @@ int main(int argc, char **argv)
     // Main loop
     cv::Mat im;
     
-    unsigned int fps = cap.get(CV_CAP_PROP_FPS);
-    
-    for(;;)
+    while(cap.read(im))
     {
-        
-        if (!cap.read(im))
-            break;
         
         if(im.empty())
         {
@@ -77,10 +72,12 @@ int main(int argc, char **argv)
         
         double tframe = cap.get(CV_CAP_PROP_POS_MSEC) / 1000;
         
+        cout << "Second: " << tframe << endl;
+
+        resize(im, im, cv::Size(960, 540), 0, 0, cv::INTER_CUBIC);
+
         // Pass the image to the SLAM system
         cv::Mat pose = SLAM.TrackMonocular(im,tframe);
-        cout << "Finished frame: " << tframe << endl;
-        usleep(1e6/fps);
     }
     
     // Stop all threads

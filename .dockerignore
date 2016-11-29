@@ -6,3 +6,13 @@ rgb
 build
 data
 Examples/Monocular/house
+
+# CMake files (prevents build issues when built on host machine)
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Makefile
+cmake_install.cmake
+install_manifest.txt
+CTestTestfile.cmake
+

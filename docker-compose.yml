@@ -1,4 +1,4 @@
 slam:
   build: .
   volumes:
-   - ./data:/usr/local/slam/Examples/Monocular/data
+   - ./data:/usr/local/slam/data
