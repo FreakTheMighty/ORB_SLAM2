@@ -45,6 +45,8 @@ public:
     void SetWorldPos(const cv::Mat &Pos);
     cv::Mat GetWorldPos();
 
+    cv::Vec3b GetAvgColor();
+    
     cv::Mat GetNormal();
     KeyFrame* GetReferenceKeyFrame();
 
@@ -110,6 +112,9 @@ public:
 
 
     static std::mutex mGlobalMutex;
+    
+    cv::Vec3b mColorSum;
+    int mColorSamples;
 
 protected:    
 

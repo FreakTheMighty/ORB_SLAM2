@@ -265,6 +265,31 @@ void Frame::UpdatePoseMatrices()
     mtcw = mTcw.rowRange(0,3).col(3);
     mOw = -mRcw.t()*mtcw;
 }
+    
+bool Frame::projectMapPoint(MapPoint *pMP, float viewingCosLimit, std::vector<float> UV)
+{
+    
+    if (!this->isInFrustum(pMP, viewingCosLimit)) {
+        return false;
+    }
+    
+    // 3D in absolute coordinates
+    cv::Mat P = pMP->GetWorldPos();
+    
+    // 3D in camera coordinates
+    const cv::Mat Pc = mRcw*P+mtcw;
+    const float &PcX = Pc.at<float>(0);
+    const float &PcY= Pc.at<float>(1);
+    const float &PcZ = Pc.at<float>(2);
+    
+    // Project in image and check it is not outside
+    const float invz = 1.0f/PcZ;
+    const float u=fx*PcX*invz+cx;
+    const float v=fy*PcY*invz+cy;
+    UV[0] = u;
+    UV[1] = v;
+    return true;
+}
 
 bool Frame::isInFrustum(MapPoint *pMP, float viewingCosLimit)
 {

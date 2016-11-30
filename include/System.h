@@ -89,6 +89,8 @@ public:
     // It waits until all threads have finished.
     // This function must be called before saving the trajectory.
     void Shutdown();
+    
+    void ColorMapPoints(cv::Mat &im);
 
     // Save camera trajectory in the TUM RGB-D dataset format.
     // Call first Shutdown()

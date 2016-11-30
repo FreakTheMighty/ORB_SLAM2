@@ -336,6 +336,48 @@ void System::SaveTrajectoryTUM(const string &filename)
     cout << endl << "trajectory saved!" << endl;
 }
 
+void System::ColorMapPoints(cv::Mat &im)
+{
+    
+    
+    const vector<MapPoint*> &vpMPs = mpMap->GetAllMapPoints();
+    const vector<MapPoint*> &vpRefMPs = mpMap->GetReferenceMapPoints();
+    const vector<float> UV(2, 0);
+    
+    set<MapPoint*> spRefMPs(vpRefMPs.begin(), vpRefMPs.end());
+    
+    if(vpMPs.empty())
+        return;
+    
+    for(size_t i=0, iend=vpMPs.size(); i<iend;i++)
+    {
+        if(vpMPs[i]->isBad())
+            continue;
+        if(mpTracker->mCurrentFrame.projectMapPoint(vpMPs[i],0.5, UV))
+        {
+            // Back project
+            cv::Vec3b intensity = im.at<cv::Vec3b>(UV[0], UV[1]);
+            vpMPs[i]->mColorSum += intensity;
+            vpMPs[i]->mColorSamples += 1;
+        }
+
+    }
+    
+    for(set<MapPoint*>::iterator sit=spRefMPs.begin(), send=spRefMPs.end(); sit!=send; sit++)
+    {
+        if((*sit)->isBad())
+            continue;
+        if(mpTracker->mCurrentFrame.projectMapPoint(*sit,0.5, UV))
+        {
+            // Back project
+            cv::Vec3b intensity = im.at<cv::Vec3b>(UV[0], UV[1]);
+            (*sit)->mColorSum += intensity;
+            (*sit)->mColorSamples += 1;
+        }
+
+    }
+}
+    
 void System::SavePointCloud(const string &filename)
 {
     cout << endl << "Saving point cloud to " << filename << " ..." << endl;
@@ -357,7 +399,8 @@ void System::SavePointCloud(const string &filename)
         if(vpMPs[i]->isBad())
             continue;
         cv::Mat pos = vpMPs[i]->GetWorldPos();
-        f << setprecision(7) << pos.at<float>(0) << " " << pos.at<float>(1) << " " << pos.at<float>(2) << endl;
+        cv::Vec3b color = vpMPs[i]->GetAvgColor();
+        f << setprecision(7) << pos.at<float>(0) << " " << pos.at<float>(1) << " " << pos.at<float>(2) << " " << color[0] << " " << color[1] << " " << color[2] << endl;
     }
     
     for(set<MapPoint*>::iterator sit=spRefMPs.begin(), send=spRefMPs.end(); sit!=send; sit++)
@@ -365,7 +408,8 @@ void System::SavePointCloud(const string &filename)
         if((*sit)->isBad())
             continue;
         cv::Mat pos = (*sit)->GetWorldPos();
-        f << setprecision(7) << pos.at<float>(0) << " " << pos.at<float>(1) << " " << pos.at<float>(2) << endl;
+        cv::Vec3b color = (*sit)->GetAvgColor();
+        f << setprecision(7) << pos.at<float>(0) << " " << pos.at<float>(1) << " " << pos.at<float>(2) << " " << color[0] << " " << color[1] << " " << color[2] << endl;
     }
     
     f.close();

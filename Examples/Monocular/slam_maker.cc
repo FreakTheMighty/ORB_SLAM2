@@ -78,6 +78,7 @@ int main(int argc, char **argv)
 
         // Pass the image to the SLAM system
         cv::Mat pose = SLAM.TrackMonocular(im,tframe);
+        SLAM.ColorMapPoints(im);
     }
     
     // Stop all threads

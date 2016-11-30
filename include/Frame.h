@@ -78,6 +78,8 @@ public:
     inline cv::Mat GetRotationInverse(){
         return mRwc.clone();
     }
+    
+    bool projectMapPoint(MapPoint* pMP, float viewingCosLimit, std::vector<float> UV);
 
     // Check if a MapPoint is in the frustum of the camera
     // and fill variables of the MapPoint to be used by the tracking
